@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +64,7 @@ public class StudentService {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addStudent(Student student){
         if(List.add(student)){
-            return Response.status(Response.Status.CREATED).build();
+            return Response.created(URI.create("/students/"+student.getIndex())).build();
         }
         else{
             return Response.status(Response.Status.BAD_REQUEST).build();
@@ -84,8 +85,13 @@ public class StudentService {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateStudent(@PathParam("index") int index, Student student) {
         Student s = findStudentByIndex(index);
-        List.set(List.indexOf(s), student);
-        return Response.status(Response.Status.OK).build();
+        if(s != null) {
+            s.setBirthday(student.getBirthday());
+            s.setFirstname(student.getFirstname());
+            s.setLastname(student.getLastname());
+            return Response.status(Response.Status.OK).build();
+        }
+        return Response.status(Response.Status.NOT_FOUND).build();
     }
 
     @DELETE
@@ -113,8 +119,9 @@ public class StudentService {
     @Path("/{index}/grades")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addGrade(@PathParam("index") int index, Grade grade){
-        if(findStudentByIndex(index).addGrade(grade)){
-            return Response.status(Response.Status.CREATED).build();
+        Student student = findStudentByIndex(index);
+        if(student != null && student.addGrade(grade)){
+            return Response.created(URI.create("/students/"+student.getIndex()+"/grades/"+grade.getId())).build();
         }
         else{
             return Response.status(Response.Status.BAD_REQUEST).build();

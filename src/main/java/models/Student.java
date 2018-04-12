@@ -1,5 +1,6 @@
 package models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.google.gson.Gson;
 
 import javax.ws.rs.GET;
@@ -14,6 +15,7 @@ import java.util.List;
 public class Student {
     private int index;
     private String firstname,lastname;
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd", timezone="CET")
     private Date birthday;
     private List<Grade> grades;
     private static int indexCounter = 0;

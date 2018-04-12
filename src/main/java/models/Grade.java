@@ -1,10 +1,13 @@
 package models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.util.Date;
 
 public class Grade {
     private int id;
     private float value;
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd", timezone="CET")
     private Date date;
     private Course course;
     private static int idCounter = 0;
@@ -34,11 +37,7 @@ public class Grade {
     }
 
     public void setValue(float value) throws Exception {
-        if(value >= 2 && value <= 5 && value%0.5 == 0){
-            this.value = value;
-            return;
-        }
-        throw new Exception("Incorrect grade value");
+        this.value = Math.round(value * 2) / 2;
     }
 
     public Date getDate() {

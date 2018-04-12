@@ -3,6 +3,7 @@ package models;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +58,7 @@ public class CourseService {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addCourse(Course course){
         if(List.add(course)){
-            return Response.status(Response.Status.OK).build();
+            return Response.created(URI.create("/courses/"+course.getId())).build();
         }
         else{
             return Response.status(Response.Status.BAD_REQUEST).build();
