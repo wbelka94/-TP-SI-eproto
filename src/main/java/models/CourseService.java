@@ -49,7 +49,7 @@ public class CourseService {
 
     //[GET, POST] /courses
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
     public List<Course> getAll() {
         return List;
     }
@@ -68,7 +68,7 @@ public class CourseService {
     //[GET, PUT, DELETE] /courses/{id}
     @GET
     @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
     public Course getCourse(@PathParam("id") int id) {
         return findCoursetById(id);
     }

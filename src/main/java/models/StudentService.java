@@ -55,7 +55,7 @@ public class StudentService {
     //[GET, POST] /students
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
     public List<Student> getAll() {
         return List;
     }
@@ -75,7 +75,7 @@ public class StudentService {
     //[GET, PUT, DELETE] /students/{index}
     @GET
     @Path("/{index}")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
     public Student getStudent(@PathParam("index") int index) {
         return findStudentByIndex(index);
     }
@@ -110,7 +110,7 @@ public class StudentService {
 
     @GET
     @Path("/{index}/grades")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
     public List<Grade> getGradesOfStudent(@PathParam("index") int index) {
         return findStudentByIndex(index).getGrades();
     }
@@ -133,7 +133,7 @@ public class StudentService {
 
     @GET
     @Path("/{index}/grades/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
     public Grade getGrade(@PathParam("index") int index, @PathParam("id") int id) {
         return findStudentByIndex(index).findGradeById(id);
     }
