@@ -17,7 +17,6 @@ public class StudentService {
         try {
             List.add(
                     new Student(
-                            1,
                             "Jan",
                             "Kowalski",
                             new SimpleDateFormat("dd-MM-yyyy").parse("22-02-1994")
@@ -26,7 +25,6 @@ public class StudentService {
 
             List.add(
                     new Student(
-                            2,
                             "Anna",
                             "Nowak",
                             new SimpleDateFormat("dd-MM-yyyy").parse("12-05-1996")
@@ -35,7 +33,6 @@ public class StudentService {
 
             List.add(
                     new Student(
-                            3,
                             "Piotr",
                             "Kowalczyk",
                             new SimpleDateFormat("dd-MM-yyyy").parse("28-07-1997")
@@ -93,13 +90,13 @@ public class StudentService {
 
     @DELETE
     @Path("/{index}")
-    public Response updateStudent(@PathParam("index") int index) {
+    public Response deleteStudent(@PathParam("index") int index) {
         Student s = findStudentByIndex(index);
         if(List.remove(s)){
             return Response.status(Response.Status.OK).build();
         }
         else{
-            return Response.status(Response.Status.BAD_REQUEST).build();
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
 
@@ -107,6 +104,7 @@ public class StudentService {
 
     @GET
     @Path("/{index}/grades")
+    @Produces(MediaType.APPLICATION_JSON)
     public List<Grade> getGradesOfStudent(@PathParam("index") int index) {
         return findStudentByIndex(index).getGrades();
     }
@@ -114,12 +112,48 @@ public class StudentService {
     @POST
     @Path("/{index}/grades")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response addStudent(@PathParam("index") int index, Grade grade){
+    public Response addGrade(@PathParam("index") int index, Grade grade){
         if(findStudentByIndex(index).addGrade(grade)){
             return Response.status(Response.Status.CREATED).build();
         }
         else{
             return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+    }
+
+
+    //[GET, PUT, DELETE] /students/{index}/grades/{id}
+
+    @GET
+    @Path("/{index}/grades/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Grade getGrade(@PathParam("index") int index, @PathParam("id") int id) {
+        return findStudentByIndex(index).findGradeById(id);
+    }
+
+    @PUT
+    @Path("/{index}/grades/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response updateGrade(@PathParam("index") int index, @PathParam("id") int id, Grade grade) {
+        Student s = findStudentByIndex(index);
+        try {
+            s.updateGrade(id,grade);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+        return Response.status(Response.Status.OK).build();
+    }
+
+    @DELETE
+    @Path("/{index}/grades/{id}")
+    public Response deleteGrade(@PathParam("index") int index, @PathParam("id") int id) {
+        Student s = findStudentByIndex(index);
+        if(s.deleteGrade(id)){
+            return Response.status(Response.Status.OK).build();
+        }
+        else{
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
 

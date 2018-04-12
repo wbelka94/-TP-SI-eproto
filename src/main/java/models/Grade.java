@@ -7,9 +7,14 @@ public class Grade {
     private float value;
     private Date date;
     private Course course;
+    private static int idCounter = 0;
+
+    public Grade(){
+        setId();
+    }
 
     public Grade(int id, float value, Date date, Course course) {
-        this.id = id;
+        setId();
         this.value = value;
         this.date = date;
         this.course = course;
@@ -19,8 +24,9 @@ public class Grade {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setId() {
+        idCounter++;
+        this.id = idCounter;
     }
 
     public float getValue() {
@@ -47,7 +53,12 @@ public class Grade {
         return course;
     }
 
-    public void setCourse(Course course) {
-        this.course = course;
+    public void setCourse(int id) throws Exception {
+        Course course = CourseService.findCoursetById(id);
+        if (course != null) {
+            this.course = course;
+        } else {
+            throw new Exception("Course with id=" + id + " don't exist");
+        }
     }
 }

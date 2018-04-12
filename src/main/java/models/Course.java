@@ -3,20 +3,25 @@ package models;
 public class Course {
     private int id;
     private String name,lecturer;
+    private static int idCounter = 0;
 
-    public Course(int id, String name, String lecturer) {
-        this.id = id;
+    public Course(){
+        setId();
+    }
+
+    public Course(String name, String lecturer) {
+        setId();
         this.name = name;
         this.lecturer = lecturer;
     }
-
 
     public int getId() {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setId() {
+        idCounter++;
+        this.id = idCounter;
     }
 
     public String getName() {

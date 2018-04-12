@@ -15,7 +15,6 @@ public class CourseService {
         try {
             List.add(
                     new Course(
-                            1,
                             "TPSI",
                             "Kowalski"
                     )
@@ -23,7 +22,6 @@ public class CourseService {
 
             List.add(
                     new Course(
-                            2,
                             "MiASI",
                             "Nowak"
                     )
@@ -31,7 +29,6 @@ public class CourseService {
 
             List.add(
                     new Course(
-                            3,
                             "TPAL",
                             "Kowalczyk"
                     )
@@ -40,7 +37,7 @@ public class CourseService {
         }
     }
 
-    Course findCoursetById(int id){
+    public static Course findCoursetById(int id){
         for(Course course : List){
             if(course.getId() == id){
                 return course;
@@ -92,7 +89,7 @@ public class CourseService {
             return Response.status(Response.Status.OK).build();
         }
         else{
-            return Response.status(Response.Status.BAD_REQUEST).build();
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
 
     }
