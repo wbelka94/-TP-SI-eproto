@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,8 +64,13 @@ public class StudentService {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public void addStudent(Student student){
-        List.add(student);
+    public Response addStudent(Student student){
+        if(List.add(student)){
+            return Response.status(Response.Status.CREATED).build();
+        }
+        else{
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
     }
 
 
@@ -79,16 +85,22 @@ public class StudentService {
     @PUT
     @Path("/{index}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void updateStudent(@PathParam("index") int index, Student student) {
+    public Response updateStudent(@PathParam("index") int index, Student student) {
         Student s = findStudentByIndex(index);
         List.set(List.indexOf(s), student);
+        return Response.status(Response.Status.OK).build();
     }
 
     @DELETE
     @Path("/{index}")
-    public void updateStudent(@PathParam("index") int index) {
+    public Response updateStudent(@PathParam("index") int index) {
         Student s = findStudentByIndex(index);
-        List.remove(s);
+        if(List.remove(s)){
+            return Response.status(Response.Status.OK).build();
+        }
+        else{
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
     }
 
     //[GET, POST] /students/{index}/grades
@@ -102,8 +114,13 @@ public class StudentService {
     @POST
     @Path("/{index}/grades")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void addStudent(@PathParam("index") int index, Grade grade){
-        findStudentByIndex(index).addGrade(grade);
+    public Response addStudent(@PathParam("index") int index, Grade grade){
+        if(findStudentByIndex(index).addGrade(grade)){
+            return Response.status(Response.Status.CREATED).build();
+        }
+        else{
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
     }
 
 }

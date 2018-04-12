@@ -2,6 +2,7 @@ package models;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,8 +58,13 @@ public class CourseService {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public void addCourse(Course course){
-        List.add(course);
+    public Response addCourse(Course course){
+        if(List.add(course)){
+            return Response.status(Response.Status.OK).build();
+        }
+        else{
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
     }
 
     //[GET, PUT, DELETE] /courses/{id}
@@ -72,15 +78,22 @@ public class CourseService {
     @PUT
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void updateCourse(@PathParam("id") int id, Course course) {
+    public Response updateCourse(@PathParam("id") int id, Course course) {
         Course c = findCoursetById(id);
         List.set(List.indexOf(c), course);
+        return Response.status(Response.Status.OK).build();
     }
 
     @DELETE
     @Path("/{id}")
-    public void deleteCourse(@PathParam("id") int id) {
+    public Response deleteCourse(@PathParam("id") int id) {
         Course course = findCoursetById(id);
-        List.remove(course);
+        if(List.remove(course)){
+            return Response.status(Response.Status.OK).build();
+        }
+        else{
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+
     }
 }
