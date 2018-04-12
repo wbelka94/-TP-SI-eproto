@@ -27,8 +27,8 @@ public class Student {
         this.birthday = birthday;
     }
 
-    public void addGrade(){
-
+    public void addGrade(Grade grade){
+        grades.add(grade);
     }
 
     public int getIndex() {

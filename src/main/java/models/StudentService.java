@@ -91,6 +91,19 @@ public class StudentService {
         List.remove(s);
     }
 
+    //[GET, POST] /students/{index}/grades
 
+    @GET
+    @Path("/{index}/grades")
+    public List<Grade> getGradesOfStudent(@PathParam("index") int index) {
+        return findStudentByIndex(index).getGrades();
+    }
+
+    @POST
+    @Path("/{index}/grades")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void addStudent(@PathParam("index") int index, Grade grade){
+        findStudentByIndex(index).addGrade(grade);
+    }
 
 }
