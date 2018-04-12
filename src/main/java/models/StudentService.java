@@ -16,7 +16,7 @@ public class StudentService {
         try {
             List.add(
                     new Student(
-                            123456,
+                            1,
                             "Jan",
                             "Kowalski",
                             new SimpleDateFormat("dd-MM-yyyy").parse("22-02-1994")
@@ -25,7 +25,7 @@ public class StudentService {
 
             List.add(
                     new Student(
-                            654321,
+                            2,
                             "Anna",
                             "Nowak",
                             new SimpleDateFormat("dd-MM-yyyy").parse("12-05-1996")
@@ -34,7 +34,7 @@ public class StudentService {
 
             List.add(
                     new Student(
-                            741258,
+                            3,
                             "Piotr",
                             "Kowalczyk",
                             new SimpleDateFormat("dd-MM-yyyy").parse("28-07-1997")
@@ -44,7 +44,22 @@ public class StudentService {
         }
     }
 
+    Student findStudentByIndex(int index){
+        for(Student student : List){
+            if(student.getIndex() == index){
+                return student;
+            }
+        }
+        return null;
+    }
+
     //[GET, POST] /students
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Student> getAll() {
+        return List;
+    }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -52,13 +67,30 @@ public class StudentService {
         List.add(student);
     }
 
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public String getAll() {
-        return new Gson().toJson(List);
-    }
 
     //[GET, PUT, DELETE] /students/{index}
+    @GET
+    @Path("/{index}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Student getStudent(@PathParam("index") int index) {
+        return findStudentByIndex(index);
+    }
+
+    @PUT
+    @Path("/{index}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void updateStudent(@PathParam("index") int index, Student student) {
+        Student s = findStudentByIndex(index);
+        List.set(List.indexOf(s), student);
+    }
+
+    @DELETE
+    @Path("/{index}")
+    public void updateStudent(@PathParam("index") int index) {
+        Student s = findStudentByIndex(index);
+        List.remove(s);
+    }
+
 
 
 }
