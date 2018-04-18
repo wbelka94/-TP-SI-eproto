@@ -1,6 +1,7 @@
 package models;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.URI;
@@ -50,8 +51,12 @@ public class CourseService {
     //[GET, POST] /courses
     @GET
     @Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
-    public List<Course> getAll() {
-        return List;
+    public Object getAll() {
+        if(List != null) {
+            return new GenericEntity<List<Course>>(List){};
+        }else {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
     }
 
     @POST

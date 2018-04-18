@@ -2,6 +2,7 @@ package models;
 
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
+import org.glassfish.jersey.linking.DeclarativeLinkingFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
 import java.io.IOException;
@@ -15,7 +16,9 @@ public class RESTServer {
     public static HttpServer startServer() {
         // create a resource config that scans for JAX-RS resources and providers
         // in com.example.rest package
-        final ResourceConfig rc = new ResourceConfig().packages("models");
+        final ResourceConfig rc = new ResourceConfig()
+                .packages("org.glassfish.jersey.examples.linking","models")
+                .register(DeclarativeLinkingFeature.class);
 
         // create and start a new instance of grizzly http server
         // exposing the Jersey application at BASE_URI

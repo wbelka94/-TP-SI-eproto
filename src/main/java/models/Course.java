@@ -1,9 +1,29 @@
 package models;
 
+import org.glassfish.jersey.linking.InjectLink;
+import org.glassfish.jersey.linking.InjectLinks;
+
+import javax.ws.rs.core.Link;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.util.List;
+
+@XmlRootElement
 public class Course {
     private int id;
     private String name,lecturer;
     private static int idCounter = 0;
+
+    @InjectLinks({
+            @InjectLink(resource = CourseService.class, rel = "parent"),
+            @InjectLink(value="courses/${instance.id}", rel="self"),
+    })
+    @XmlElement(name="link")
+    @XmlElementWrapper(name = "links")
+    @XmlJavaTypeAdapter(Link.JaxbAdapter.class)
+    List<Link> links;
 
     public Course(){
         setId();

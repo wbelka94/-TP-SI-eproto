@@ -2,10 +2,16 @@ package models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.google.gson.Gson;
+import org.glassfish.jersey.linking.InjectLink;
+import org.glassfish.jersey.linking.InjectLinks;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.core.Link;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -14,11 +20,22 @@ import java.util.List;
 @XmlRootElement
 public class Student {
     private int index;
-    private String firstname,lastname;
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd", timezone="CET")
+    private String firstname, lastname;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "CET")
     private Date birthday;
+
     private List<Grade> grades;
     private static int indexCounter = 0;
+
+    @InjectLinks({
+            @InjectLink(resource = StudentService.class, rel = "parent"),
+            @InjectLink(value="students/${instance.index}", rel="self"),
+            @InjectLink(value="students/${instance.index}/grades", rel="grades"),
+    })
+    @XmlElement(name="link")
+    @XmlElementWrapper(name = "links")
+    @XmlJavaTypeAdapter(Link.JaxbAdapter.class)
+    List<Link> links;
 
 
     public Student() {
@@ -34,13 +51,13 @@ public class Student {
         this.birthday = birthday;
     }
 
-    public boolean addGrade(Grade grade){
+    public boolean addGrade(Grade grade) {
         return grades.add(grade);
     }
 
-    public Grade findGradeById(int id){
-        for(Grade grade: grades){
-            if(grade.getId() == id){
+    public Grade findGradeById(int id) {
+        for (Grade grade : grades) {
+            if (grade.getId() == id) {
                 return grade;
             }
         }
@@ -49,13 +66,13 @@ public class Student {
 
     public void updateGrade(int id, Grade grade) throws Exception {
         Grade g = findGradeById(id);
-        if(g == null){
-            throw new Exception("Grade with id="+id+" for student with index="+index+" don't exist");
+        if (g == null) {
+            throw new Exception("Grade with id=" + id + " for student with index=" + index + " don't exist");
         }
-        grades.set(grades.indexOf(g),grade);
+        grades.set(grades.indexOf(g), grade);
     }
 
-    public boolean deleteGrade(int id){
+    public boolean deleteGrade(int id) {
         return grades.remove(findGradeById(id));
     }
 

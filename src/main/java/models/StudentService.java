@@ -1,10 +1,17 @@
 package models;
 
 import com.google.gson.Gson;
+import org.glassfish.jersey.linking.InjectLink;
+import org.glassfish.jersey.linking.InjectLinks;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.GenericEntity;
+import javax.ws.rs.core.Link;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -12,6 +19,9 @@ import java.util.List;
 
 @Path("/students")
 public class StudentService {
+
+
+
     private static List<Student> List = new ArrayList<>();;
 
     static {
@@ -52,12 +62,19 @@ public class StudentService {
         return null;
     }
 
+
+
+
     //[GET, POST] /students
 
     @GET
     @Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
-    public List<Student> getAll() {
-        return List;
+    public Object getAll() {
+        if(List != null) {
+            return new GenericEntity<List<Student>>(List){};
+        }else {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
     }
 
     @POST
@@ -76,8 +93,13 @@ public class StudentService {
     @GET
     @Path("/{index}")
     @Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
-    public Student getStudent(@PathParam("index") int index) {
-        return findStudentByIndex(index);
+    public Object getStudent(@PathParam("index") int index) {
+        Student s = findStudentByIndex(index);
+        if (s != null) {
+            return s;
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
     }
 
     @PUT
@@ -111,8 +133,13 @@ public class StudentService {
     @GET
     @Path("/{index}/grades")
     @Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
-    public List<Grade> getGradesOfStudent(@PathParam("index") int index) {
-        return findStudentByIndex(index).getGrades();
+    public Object getGradesOfStudent(@PathParam("index") int index) {
+        List<Grade> grades = findStudentByIndex(index).getGrades();
+        if(grades != null){
+            return new GenericEntity<List<Grade>>(grades){};
+        }else{
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
     }
 
     @POST
@@ -134,8 +161,13 @@ public class StudentService {
     @GET
     @Path("/{index}/grades/{id}")
     @Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
-    public Grade getGrade(@PathParam("index") int index, @PathParam("id") int id) {
-        return findStudentByIndex(index).findGradeById(id);
+    public Object getGrade(@PathParam("index") int index, @PathParam("id") int id) {
+        Grade grade = findStudentByIndex(index).findGradeById(id);
+        if(grade != null){
+            return grade;
+        }else{
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
     }
 
     @PUT
