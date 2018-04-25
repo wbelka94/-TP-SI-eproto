@@ -71,14 +71,14 @@ public class Grade {
         return course;
     }
 
-    /*public void setCourse(int id) throws Exception {
+    public void setCourse(int id) throws Exception {
         Course course = CourseService.findCoursetById(id);
         if (course != null) {
             this.course = course;
         } else {
             throw new Exception("Course with id=" + id + " don't exist");
         }
-    }*/
+    }
 
     @XmlTransient
     public ObjectId getId() {

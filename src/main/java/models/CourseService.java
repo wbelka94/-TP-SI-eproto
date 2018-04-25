@@ -39,14 +39,14 @@ public class CourseService {
         }
     }
 
-    /*public static Course findCoursetById(int id){
+    public static Course findCoursetById(int id){
         for(Course course : List){
             if(course.getId() == id){
                 return course;
             }
         }
         return null;
-    }*/
+    }
 
     //[GET, POST] /courses
     @GET

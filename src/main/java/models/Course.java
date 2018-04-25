@@ -19,8 +19,8 @@ import java.util.List;
 public class Course {
     @Id
     @XmlJavaTypeAdapter(ObjectIdJaxbAdapter.class)
-    private ObjectId id;
-    //private int id;
+    //private ObjectId id;
+    private int id;
     private String name,lecturer;
     private static int idCounter = 0;
 
@@ -34,23 +34,23 @@ public class Course {
     List<Link> links;
 
     public Course(){
-       // setId();
+        setId();
     }
 
     public Course(String name, String lecturer) {
-        //setId();
+        setId();
         this.name = name;
         this.lecturer = lecturer;
     }
 
-    /*public int getId() {
+    public int getId() {
         return id;
     }
 
     public void setId() {
         idCounter++;
         this.id = idCounter;
-    }*/
+    }
 
     public String getName() {
         return name;
@@ -68,12 +68,12 @@ public class Course {
         this.lecturer = lecturer;
     }
 
-    @XmlTransient
+    /*@XmlTransient
     public ObjectId getId() {
         return id;
     }
 
     public void setId(ObjectId id) {
         this.id = id;
-    }
+    }*/
 }

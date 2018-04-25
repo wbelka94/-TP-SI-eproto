@@ -135,7 +135,10 @@ public class StudentService {
     @Path("/{index}")
     public Response deleteStudent(@PathParam("index") int index) {
         Query<Student> query = MongoDB.getDatastore().createQuery(Student.class).filter("index",index);
-        MongoDB.getDatastore().findAndDelete(query);
+        Student student = MongoDB.getDatastore().findAndDelete(query);
+        if(student == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
         return Response.status(Response.Status.OK).build();
         /*Student s = findStudentByIndex(index);
         if(List.remove(s)){
@@ -164,13 +167,20 @@ public class StudentService {
     @Path("/{index}/grades")
     @Consumes({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
     public Response addGrade(@PathParam("index") int index, Grade grade){
-        Student student = findStudentByIndex(index);
-        if(student != null && student.addGrade(grade)){
-            return Response.created(URI.create("/students/"+student.getIndex()+"/grades/"+grade.getId())).build();
+        try {
+
+            Student student = MongoDB.getDatastore().createQuery(Student.class).filter("index",index).get();
+            if(student != null && student.addGrade(grade)){
+                MongoDB.getDatastore().save(student);
+                return Response.created(URI.create("/students/"+student.getIndex()+"/grades/"+grade.getId())).build();
+            }
+            else{
+                return Response.status(Response.Status.BAD_REQUEST).build();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
-        else{
-            return Response.status(Response.Status.BAD_REQUEST).build();
-        }
+        return Response.status(Response.Status.BAD_REQUEST).build();
     }
 
 
