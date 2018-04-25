@@ -39,14 +39,14 @@ public class CourseService {
         }
     }
 
-    public static Course findCoursetById(int id){
+    /*public static Course findCoursetById(int id){
         for(Course course : List){
             if(course.getId() == id){
                 return course;
             }
         }
         return null;
-    }
+    }*/
 
     //[GET, POST] /courses
     @GET
@@ -60,7 +60,7 @@ public class CourseService {
     }
 
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
     public Response addCourse(Course course){
         if(List.add(course)){
             return Response.created(URI.create("/courses/"+course.getId())).build();
@@ -70,7 +70,7 @@ public class CourseService {
         }
     }
 
-    //[GET, PUT, DELETE] /courses/{id}
+   /* //[GET, PUT, DELETE] /courses/{id}
     @GET
     @Path("/{id}")
     @Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
@@ -80,7 +80,7 @@ public class CourseService {
 
     @PUT
     @Path("/{id}")
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
     public Response updateCourse(@PathParam("id") int id, Course course) {
         Course c = findCoursetById(id);
         List.set(List.indexOf(c), course);
@@ -98,5 +98,5 @@ public class CourseService {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-    }
+    }*/
 }

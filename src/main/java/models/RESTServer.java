@@ -7,7 +7,6 @@ import org.glassfish.jersey.server.ResourceConfig;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.List;
 
 public class RESTServer {
     // Base URI the Grizzly HTTP server will listen on
@@ -26,10 +25,15 @@ public class RESTServer {
     }
 
     public static void main(String[] args) throws IOException {
+
+        new MongoDB();
+
         final HttpServer server = startServer();
         System.out.println(String.format("Jersey app started with WADL available at "
                 + "%sapplication.wadl\nHit enter to stop it...", BASE_URI));
         System.in.read();
         server.stop();
+
+
     }
 }

@@ -1,8 +1,11 @@
 package models;
 
 import com.google.gson.Gson;
+import com.mongodb.BasicDBObject;
 import org.glassfish.jersey.linking.InjectLink;
 import org.glassfish.jersey.linking.InjectLinks;
+import org.mongodb.morphia.query.Query;
+import org.mongodb.morphia.query.QueryImpl;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.GenericEntity;
@@ -24,7 +27,7 @@ public class StudentService {
 
     private static List<Student> List = new ArrayList<>();;
 
-    static {
+    /*static {
         try {
             List.add(
                     new Student(
@@ -51,7 +54,7 @@ public class StudentService {
             );
         } catch (Exception ignored) {
         }
-    }
+    }*/
 
     Student findStudentByIndex(int index){
         for(Student student : List){
@@ -63,29 +66,40 @@ public class StudentService {
     }
 
 
-
-
     //[GET, POST] /students
 
     @GET
     @Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
     public Object getAll() {
-        if(List != null) {
-            return new GenericEntity<List<Student>>(List){};
-        }else {
-            return Response.status(Response.Status.NOT_FOUND).build();
+        try {
+            Query<Student> query = MongoDB.getDatastore().createQuery(Student.class);
+            return query.asList();
+        }catch (Exception e){
+            e.printStackTrace();
         }
+//        if(List != null) {
+//            return new GenericEntity<List<Student>>(List){};
+//        }else {
+//            return Response.status(Response.Status.NOT_FOUND).build();
+//        }
+        return  Response.status(Response.Status.NOT_FOUND).build();
     }
 
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
     public Response addStudent(Student student){
-        if(List.add(student)){
-            return Response.created(URI.create("/students/"+student.getIndex())).build();
+        try {
+            MongoDB.getDatastore().save(student);
+        }catch (Exception e){
+            e.printStackTrace();
         }
+
+        //if(List.add(student)){
+            return Response.created(URI.create("/students/"+student.getIndex())).build();
+       /* }
         else{
             return Response.status(Response.Status.BAD_REQUEST).build();
-        }
+        }*/
     }
 
 
@@ -94,17 +108,18 @@ public class StudentService {
     @Path("/{index}")
     @Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
     public Object getStudent(@PathParam("index") int index) {
-        Student s = findStudentByIndex(index);
+        return MongoDB.getDatastore().createQuery(Student.class).filter("index",index).get();
+        /*Student s = findStudentByIndex(index);
         if (s != null) {
             return s;
         } else {
             return Response.status(Response.Status.NOT_FOUND).build();
-        }
+        }*/
     }
 
     @PUT
     @Path("/{index}")
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
     public Response updateStudent(@PathParam("index") int index, Student student) {
         Student s = findStudentByIndex(index);
         if(s != null) {
@@ -119,13 +134,16 @@ public class StudentService {
     @DELETE
     @Path("/{index}")
     public Response deleteStudent(@PathParam("index") int index) {
-        Student s = findStudentByIndex(index);
+        Query<Student> query = MongoDB.getDatastore().createQuery(Student.class).filter("index",index);
+        MongoDB.getDatastore().findAndDelete(query);
+        return Response.status(Response.Status.OK).build();
+        /*Student s = findStudentByIndex(index);
         if(List.remove(s)){
             return Response.status(Response.Status.OK).build();
         }
         else{
             return Response.status(Response.Status.NOT_FOUND).build();
-        }
+        }*/
     }
 
     //[GET, POST] /students/{index}/grades
@@ -144,7 +162,7 @@ public class StudentService {
 
     @POST
     @Path("/{index}/grades")
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
     public Response addGrade(@PathParam("index") int index, Grade grade){
         Student student = findStudentByIndex(index);
         if(student != null && student.addGrade(grade)){
@@ -158,7 +176,7 @@ public class StudentService {
 
     //[GET, PUT, DELETE] /students/{index}/grades/{id}
 
-    @GET
+   /* @GET
     @Path("/{index}/grades/{id}")
     @Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
     public Object getGrade(@PathParam("index") int index, @PathParam("id") int id) {
@@ -172,7 +190,7 @@ public class StudentService {
 
     @PUT
     @Path("/{index}/grades/{id}")
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
     public Response updateGrade(@PathParam("index") int index, @PathParam("id") int id, Grade grade) {
         Student s = findStudentByIndex(index);
         try {
@@ -194,6 +212,6 @@ public class StudentService {
         else{
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-    }
+    }*/
 
 }

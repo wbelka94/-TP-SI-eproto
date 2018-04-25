@@ -1,18 +1,26 @@
 package models;
 
+import org.bson.types.ObjectId;
 import org.glassfish.jersey.linking.InjectLink;
 import org.glassfish.jersey.linking.InjectLinks;
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Id;
 
 import javax.ws.rs.core.Link;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.List;
 
+@Entity("courses")
 @XmlRootElement
 public class Course {
-    private int id;
+    @Id
+    @XmlJavaTypeAdapter(ObjectIdJaxbAdapter.class)
+    private ObjectId id;
+    //private int id;
     private String name,lecturer;
     private static int idCounter = 0;
 
@@ -26,23 +34,23 @@ public class Course {
     List<Link> links;
 
     public Course(){
-        setId();
+       // setId();
     }
 
     public Course(String name, String lecturer) {
-        setId();
+        //setId();
         this.name = name;
         this.lecturer = lecturer;
     }
 
-    public int getId() {
+    /*public int getId() {
         return id;
     }
 
     public void setId() {
         idCounter++;
         this.id = idCounter;
-    }
+    }*/
 
     public String getName() {
         return name;
@@ -58,5 +66,14 @@ public class Course {
 
     public void setLecturer(String lecturer) {
         this.lecturer = lecturer;
+    }
+
+    @XmlTransient
+    public ObjectId getId() {
+        return id;
+    }
+
+    public void setId(ObjectId id) {
+        this.id = id;
     }
 }
