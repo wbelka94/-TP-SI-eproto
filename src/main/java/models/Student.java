@@ -39,7 +39,6 @@ public class Student {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "CET")
     private Date birthday;
     @Embedded
-    @XmlTransient
     private List<Grade> grades;
 
     @InjectLinks({
@@ -92,7 +91,9 @@ public class Student {
         if (g == null) {
             throw new Exception("Grade with id=" + id + " for student with index=" + index + " don't exist");
         }
-        grades.set(grades.indexOf(g), grade);
+        g.setCourse(grade.getCourse());
+        g.setDate(grade.getDate());
+        g.setValue(grade.getValue());
     }
 
     public boolean deleteGrade(int id) {
@@ -151,7 +152,6 @@ public class Student {
     }
 
 
-    @XmlTransient
     public ObjectId getId() {
         return id;
     }

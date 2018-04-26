@@ -25,7 +25,6 @@ public class Grade {
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd", timezone="CET")
     private Date date;
     @Reference
-    //@XmlTransient
     private Course course;
 
     public Grade(){
@@ -63,17 +62,18 @@ public class Grade {
         this.date = date;
     }
 
-    @XmlTransient
+    //@XmlTransient
     public Course getCourse() {
         return course;
     }
 
-    public void setCourse(int id) throws Exception {
-        Course course = MongoDB.getDatastore().createQuery(Course.class).filter("uid",id).get();
-        if (course != null) {
-            this.course = course;
+    public void setCourse(Course course) throws Exception {
+        //this.course = course;
+        Course c = MongoDB.getDatastore().createQuery(Course.class).filter("uid",course.getUid()).get();
+        if (c != null) {
+            this.course = c;
         } else {
-            throw new Exception("Course with id=" + id + " don't exist");
+            throw new Exception("Course with id=" + course.getUid() + " don't exist");
         }
     }
 }

@@ -169,9 +169,6 @@ public class StudentService {
                 MongoDB.getDatastore().save(student);
                 return Response.created(URI.create("/students/"+student.getIndex()+"/grades/"+grade.getId())).build();
             }
-            else{
-                return Response.status(Response.Status.BAD_REQUEST).build();
-            }
         }catch (Exception e){
             e.printStackTrace();
         }

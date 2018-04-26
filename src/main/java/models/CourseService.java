@@ -9,6 +9,7 @@ import javax.ws.rs.core.Response;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @Path("/courses")
@@ -102,10 +103,32 @@ public class CourseService {
     @Path("/{id}")
     public Response deleteCourse(@PathParam("id") int id) {
         Query<Course> query = MongoDB.getDatastore().createQuery(Course.class).filter("uid",id);
-        Course course = MongoDB.getDatastore().findAndDelete(query);
+        Query<Student> query2 = MongoDB.getDatastore().createQuery(Student.class);
+        Course course = query.get();
+
         if(course == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
+        //deleting all grades for deleted course
+        try {
+            for(Student student : query2.asList()){
+                Iterator<Grade> iterator = student.getGrades().iterator();
+                while(iterator.hasNext()){
+                    Grade grade = iterator.next();
+                    if(grade.getCourse().getUid() == course.getUid()){
+                        iterator.remove();
+                    }
+                }
+                MongoDB.getDatastore().save(student);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
+        MongoDB.getDatastore().delete(query);
+
+
         return Response.status(Response.Status.OK).build();
     }
 }
