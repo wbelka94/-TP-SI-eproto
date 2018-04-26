@@ -39,6 +39,7 @@ public class Student {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "CET")
     private Date birthday;
     @Embedded
+    @XmlTransient
     private List<Grade> grades;
 
     @InjectLinks({
@@ -66,29 +67,37 @@ public class Student {
     }
 
     public boolean addGrade(Grade grade) {
-        return grades.add(grade);
+        int max = 0;
+        for(Grade g : grades){
+            if(g.getId()>max){
+                max = g.getId();
+            }
+        }
+        grade.setId(++max);
+        grades.add(grade);
+        return true;
     }
 
-    /*public Grade findGradeById(int id) {
-        for (Grade grade : grades) {
-            if (grade.getId() == id) {
-                return grade;
+    public Grade findGradeById(int id) {
+        for(Grade g : grades){
+            if(g.getId() == id){
+                return g;
             }
         }
         return null;
-    }*/
+    }
 
-    /*public void updateGrade(int id, Grade grade) throws Exception {
+    public void updateGrade(int id, Grade grade) throws Exception {
         Grade g = findGradeById(id);
         if (g == null) {
             throw new Exception("Grade with id=" + id + " for student with index=" + index + " don't exist");
         }
         grades.set(grades.indexOf(g), grade);
-    }*/
+    }
 
-    /*public boolean deleteGrade(int id) {
+    public boolean deleteGrade(int id) {
         return grades.remove(findGradeById(id));
-    }*/
+    }
 
     public int getIndex() {
         return index;
@@ -106,26 +115,24 @@ public class Student {
         return birthday;
     }
 
+    @XmlTransient
     public List<Grade> getGrades() {
         return grades;
     }
 
     public void setIndex() {
         try {
-            Query<AutoIncrement> query = MongoDB.getDatastore().createQuery(AutoIncrement.class);
+            Query<AutoIncrement> query = MongoDB.getDatastore().createQuery(AutoIncrement.class).filter("colectionName","students");
             UpdateOperations<AutoIncrement> updateOperations = MongoDB.getDatastore().createUpdateOperations(AutoIncrement.class).inc("actual");
             AutoIncrement autoIncrement = MongoDB.getDatastore().findAndModify(query, updateOperations);
-            System.out.println(autoIncrement.getActual());
-            if (autoIncrement.equals(null)) {
-                autoIncrement = new AutoIncrement(1);
+            if (autoIncrement == null) {
+                autoIncrement = new AutoIncrement(1, "students");
                 MongoDB.getDatastore().save(autoIncrement);
             }
             index = autoIncrement.getActual();
         }catch (Exception e){
             e.printStackTrace();
         }
-
-
     }
 
     public void setFirstname(String firstname) {

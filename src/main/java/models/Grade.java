@@ -19,17 +19,14 @@ import java.util.List;
 
 @XmlRootElement
 public class Grade {
-    @Id
     @XmlJavaTypeAdapter(ObjectIdJaxbAdapter.class)
-    ObjectId id;
+    private int id;
     private float value;
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd", timezone="CET")
     private Date date;
     @Reference
+    @XmlTransient
     private Course course;
-    private static int idCounter = 0;
-
-
 
     public Grade(){
         //setId();
@@ -42,14 +39,13 @@ public class Grade {
         this.course = course;
     }
 
-    /*public int getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId() {
-        idCounter++;
-        this.id = idCounter;
-    }*/
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public float getValue() {
         return value;
@@ -67,25 +63,17 @@ public class Grade {
         this.date = date;
     }
 
+    @XmlTransient
     public Course getCourse() {
         return course;
     }
 
     public void setCourse(int id) throws Exception {
-        Course course = CourseService.findCoursetById(id);
+        Course course = MongoDB.getDatastore().createQuery(Course.class).filter("uid",id).get();
         if (course != null) {
             this.course = course;
         } else {
             throw new Exception("Course with id=" + id + " don't exist");
         }
-    }
-
-    @XmlTransient
-    public ObjectId getId() {
-        return id;
-    }
-
-    public void setId(ObjectId id) {
-        this.id = id;
     }
 }

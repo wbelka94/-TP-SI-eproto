@@ -95,7 +95,7 @@ public class StudentService {
         }
 
         //if(List.add(student)){
-            return Response.created(URI.create("/students/"+student.getIndex())).build();
+            return Response.created(URI.create("/myapp/students/"+student.getIndex())).build();
        /* }
         else{
             return Response.status(Response.Status.BAD_REQUEST).build();
@@ -121,7 +121,7 @@ public class StudentService {
     @Path("/{index}")
     @Consumes({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
     public Response updateStudent(@PathParam("index") int index, Student student) {
-        Student s = findStudentByIndex(index);
+        Student s = MongoDB.getDatastore().createQuery(Student.class).filter("index",index).get();
         if(s != null) {
             s.setBirthday(student.getBirthday());
             s.setFirstname(student.getFirstname());
@@ -140,13 +140,6 @@ public class StudentService {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
         return Response.status(Response.Status.OK).build();
-        /*Student s = findStudentByIndex(index);
-        if(List.remove(s)){
-            return Response.status(Response.Status.OK).build();
-        }
-        else{
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }*/
     }
 
     //[GET, POST] /students/{index}/grades
@@ -155,7 +148,7 @@ public class StudentService {
     @Path("/{index}/grades")
     @Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
     public Object getGradesOfStudent(@PathParam("index") int index) {
-        List<Grade> grades = findStudentByIndex(index).getGrades();
+        List<Grade> grades = MongoDB.getDatastore().createQuery(Student.class).filter("index",index).get().getGrades();
         if(grades != null){
             return new GenericEntity<List<Grade>>(grades){};
         }else{
@@ -168,7 +161,6 @@ public class StudentService {
     @Consumes({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
     public Response addGrade(@PathParam("index") int index, Grade grade){
         try {
-
             Student student = MongoDB.getDatastore().createQuery(Student.class).filter("index",index).get();
             if(student != null && student.addGrade(grade)){
                 MongoDB.getDatastore().save(student);
@@ -186,11 +178,11 @@ public class StudentService {
 
     //[GET, PUT, DELETE] /students/{index}/grades/{id}
 
-   /* @GET
+    @GET
     @Path("/{index}/grades/{id}")
     @Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
     public Object getGrade(@PathParam("index") int index, @PathParam("id") int id) {
-        Grade grade = findStudentByIndex(index).findGradeById(id);
+        Grade grade = MongoDB.getDatastore().createQuery(Student.class).filter("index",index).get().findGradeById(id);
         if(grade != null){
             return grade;
         }else{
@@ -202,9 +194,10 @@ public class StudentService {
     @Path("/{index}/grades/{id}")
     @Consumes({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
     public Response updateGrade(@PathParam("index") int index, @PathParam("id") int id, Grade grade) {
-        Student s = findStudentByIndex(index);
+        Student s = MongoDB.getDatastore().createQuery(Student.class).filter("index",index).get();
         try {
             s.updateGrade(id,grade);
+            MongoDB.getDatastore().save(s);
         } catch (Exception e) {
             e.printStackTrace();
             return Response.status(Response.Status.BAD_REQUEST).build();
@@ -215,13 +208,13 @@ public class StudentService {
     @DELETE
     @Path("/{index}/grades/{id}")
     public Response deleteGrade(@PathParam("index") int index, @PathParam("id") int id) {
-        Student s = findStudentByIndex(index);
-        if(s.deleteGrade(id)){
+        Student s = MongoDB.getDatastore().createQuery(Student.class).filter("index",index).get();
+        if (s.deleteGrade(id)) {
+            MongoDB.getDatastore().save(s);
             return Response.status(Response.Status.OK).build();
-        }
-        else{
+        } else {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-    }*/
+    }
 
 }

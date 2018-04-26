@@ -5,6 +5,8 @@ import org.glassfish.jersey.linking.InjectLink;
 import org.glassfish.jersey.linking.InjectLinks;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
+import org.mongodb.morphia.query.Query;
+import org.mongodb.morphia.query.UpdateOperations;
 
 import javax.ws.rs.core.Link;
 import javax.xml.bind.annotation.XmlElement;
@@ -18,15 +20,15 @@ import java.util.List;
 @XmlRootElement
 public class Course {
     @Id
+    @XmlTransient
     @XmlJavaTypeAdapter(ObjectIdJaxbAdapter.class)
-    //private ObjectId id;
-    private int id;
+    private ObjectId id;
+    private int uid;
     private String name,lecturer;
-    private static int idCounter = 0;
 
     @InjectLinks({
             @InjectLink(resource = CourseService.class, rel = "parent"),
-            @InjectLink(value="courses/${instance.id}", rel="self"),
+            @InjectLink(value="/myapp/courses/${instance.id}", rel="self"),
     })
     @XmlElement(name="link")
     @XmlElementWrapper(name = "links")
@@ -34,22 +36,32 @@ public class Course {
     List<Link> links;
 
     public Course(){
-        setId();
+        setUid();
     }
 
     public Course(String name, String lecturer) {
-        setId();
+        setUid();
         this.name = name;
         this.lecturer = lecturer;
     }
 
-    public int getId() {
-        return id;
+    public int getUid() {
+        return uid;
     }
 
-    public void setId() {
-        idCounter++;
-        this.id = idCounter;
+    public void setUid() {
+        try {
+            Query<AutoIncrement> query = MongoDB.getDatastore().createQuery(AutoIncrement.class).filter("colectionName","courses");
+            UpdateOperations<AutoIncrement> updateOperations = MongoDB.getDatastore().createUpdateOperations(AutoIncrement.class).inc("actual");
+            AutoIncrement autoIncrement = MongoDB.getDatastore().findAndModify(query, updateOperations);
+            if (autoIncrement == null) {
+                autoIncrement = new AutoIncrement(1, "courses");
+                MongoDB.getDatastore().save(autoIncrement);
+            }
+            uid = autoIncrement.getActual();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public String getName() {
@@ -68,12 +80,12 @@ public class Course {
         this.lecturer = lecturer;
     }
 
-    /*@XmlTransient
+    @XmlTransient
     public ObjectId getId() {
         return id;
     }
 
     public void setId(ObjectId id) {
         this.id = id;
-    }*/
+    }
 }
