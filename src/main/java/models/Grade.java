@@ -19,13 +19,13 @@ import java.util.List;
 
 @XmlRootElement
 public class Grade {
-    @XmlJavaTypeAdapter(ObjectIdJaxbAdapter.class)
+    //@XmlJavaTypeAdapter(ObjectIdJaxbAdapter.class)
     private int id;
     private float value;
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd", timezone="CET")
     private Date date;
     @Reference
-    @XmlTransient
+    //@XmlTransient
     private Course course;
 
     public Grade(){

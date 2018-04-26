@@ -32,7 +32,7 @@ import java.util.List;
 public class Student {
     @Id
     @XmlTransient
-    @XmlJavaTypeAdapter(ObjectIdJaxbAdapter.class)
+  //  @XmlJavaTypeAdapter(ObjectIdJaxbAdapter.class)
     private ObjectId id;
     private int index;
     private String firstname, lastname;

@@ -2,6 +2,7 @@ package models;
 
 import com.google.gson.Gson;
 import com.mongodb.BasicDBObject;
+import jersey.repackaged.com.google.common.collect.Lists;
 import org.glassfish.jersey.linking.InjectLink;
 import org.glassfish.jersey.linking.InjectLinks;
 import org.mongodb.morphia.query.Query;
@@ -70,10 +71,12 @@ public class StudentService {
 
     @GET
     @Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
-    public Object getAll() {
+    public Response getAll() {
         try {
             Query<Student> query = MongoDB.getDatastore().createQuery(Student.class);
-            return query.asList();
+            List<Student> studentsList = query.asList();
+            GenericEntity<List<Student>> entity = new GenericEntity<List<Student>>(Lists.newArrayList(studentsList)){};
+            return Response.status(Response.Status.OK).entity(entity).build();
         }catch (Exception e){
             e.printStackTrace();
         }

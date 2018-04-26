@@ -21,7 +21,7 @@ import java.util.List;
 public class Course {
     @Id
     @XmlTransient
-    @XmlJavaTypeAdapter(ObjectIdJaxbAdapter.class)
+   // @XmlJavaTypeAdapter(ObjectIdJaxbAdapter.class)
     private ObjectId id;
     private int uid;
     private String name,lecturer;
