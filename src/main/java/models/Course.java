@@ -28,7 +28,7 @@ public class Course {
 
     @InjectLinks({
             @InjectLink(resource = CourseService.class, rel = "parent"),
-            @InjectLink(value="/myapp/courses/${instance.id}", rel="self"),
+            @InjectLink(value="/courses/${instance.uid}", rel="self"),
     })
     @XmlElement(name="link")
     @XmlElementWrapper(name = "links")

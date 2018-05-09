@@ -3,60 +3,24 @@ package models;
 import org.mongodb.morphia.query.Query;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.URI;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 @Path("/courses")
 public class CourseService {
-    private static java.util.List<Course> List = new ArrayList<>();;
-
-    /*static {
-        try {
-            List.add(
-                    new Course(
-                            "TPSI",
-                            "Kowalski"
-                    )
-            );
-
-            List.add(
-                    new Course(
-                            "MiASI",
-                            "Nowak"
-                    )
-            );
-
-            List.add(
-                    new Course(
-                            "TPAL",
-                            "Kowalczyk"
-                    )
-            );
-        } catch (Exception ignored) {
-        }
-    }*/
-
-   /* public static Course findCoursetById(int id){
-        for(Course course : List){
-            if(course.getId() == id){
-                return course;
-            }
-        }
-        return null;
-    }*/
-
     //[GET, POST] /courses
     @GET
     @Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
-    public Object getAll() {
+    public Object getAll(
+            @QueryParam("lecturer") String lecturer
+    ) {
         try {
             Query<Course> query = MongoDB.getDatastore().createQuery(Course.class);
+            if(lecturer != null){
+                query.field("lecturer").containsIgnoreCase(lecturer);
+            }
             return query.asList();
         }catch (Exception e){
             e.printStackTrace();
@@ -69,7 +33,7 @@ public class CourseService {
     public Response addCourse(Course course){
         MongoDB.getDatastore().save(course);
         //if(List.add(course)){
-            return Response.created(URI.create("/myapp/courses/"+course.getId())).build();
+            return Response.created(URI.create("/myapp/courses/"+course.getUid())).build();
         /*}
         else{
             return Response.status(Response.Status.BAD_REQUEST).build();

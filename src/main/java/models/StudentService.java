@@ -1,28 +1,18 @@
 package models;
 
-import com.google.gson.Gson;
-import com.mongodb.BasicDBObject;
-import javafx.scene.input.DataFormat;
 import jersey.repackaged.com.google.common.collect.Lists;
-import org.glassfish.jersey.linking.InjectLink;
-import org.glassfish.jersey.linking.InjectLinks;
 import org.mongodb.morphia.query.Query;
-import org.mongodb.morphia.query.QueryImpl;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.GenericEntity;
-import javax.ws.rs.core.Link;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.net.URI;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 @Path("/students")
@@ -43,10 +33,10 @@ public class StudentService {
         try {
             Query<Student> query = MongoDB.getDatastore().createQuery(Student.class);
             if (firstname != null) {
-                query.filter("firstname", firstname);
+                query.field("firstname").containsIgnoreCase(firstname);
             }
             if (lastname != null) {
-                query.filter("lastname", lastname);
+                query.field("lastname").containsIgnoreCase(lastname);
             }
             if(beforeDate != null){
                 query.field("birthday").lessThan(dateFromString(beforeDate));
@@ -130,9 +120,32 @@ public class StudentService {
     @GET
     @Path("/{index}/grades")
     @Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
-    public Object getGradesOfStudent(@PathParam("index") int index) {
+    public Object getGradesOfStudent(
+            @PathParam("index") int index,
+            @QueryParam("course") Integer course,
+            @QueryParam("greaterGrade") Double graeterGrade,
+            @QueryParam("lessGrade") Double lessGrade
+            ) {
         List<Grade> grades = MongoDB.getDatastore().createQuery(Student.class).filter("index",index).get().getGrades();
-        if(grades != null){
+
+        Iterator<Grade> iterator = grades.iterator();
+        while(iterator.hasNext()){
+            Grade grade = iterator.next();
+            if(course != null && grade.getCourse().getUid() != course){
+                iterator.remove();
+                continue;
+            }
+            if(graeterGrade != null && grade.getValue() <= graeterGrade){
+                iterator.remove();
+                continue;
+            }
+            if(lessGrade != null && grade.getValue() >= lessGrade){
+                iterator.remove();
+                continue;
+            }
+        }
+
+        if(grades != null && grades.size() > 0){
             return new GenericEntity<List<Grade>>(grades){};
         }else{
             return Response.status(Response.Status.NOT_FOUND).build();
