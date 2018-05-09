@@ -1,5 +1,6 @@
 package models;
 
+import components.MongoDB;
 import org.bson.types.ObjectId;
 import org.glassfish.jersey.linking.InjectLink;
 import org.glassfish.jersey.linking.InjectLinks;

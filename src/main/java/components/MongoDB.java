@@ -1,4 +1,4 @@
-package models;
+package components;
 
 import com.mongodb.MongoClient;
 import org.mongodb.morphia.Datastore;

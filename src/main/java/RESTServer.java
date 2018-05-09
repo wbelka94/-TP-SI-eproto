@@ -1,5 +1,6 @@
 package models;
 
+import components.MongoDB;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.linking.DeclarativeLinkingFeature;
@@ -16,9 +17,9 @@ public class RESTServer {
         // create a resource config that scans for JAX-RS resources and providers
         // in com.example.rest package
         final ResourceConfig rc = new ResourceConfig()
-                .packages("org.glassfish.jersey.examples.linking","models")
-                .register(DeclarativeLinkingFeature.class)
-                .register(DateParamConverterProvider.class);
+                .packages("org.glassfish.jersey.examples.linking","services")
+                .register(DeclarativeLinkingFeature.class);
+                //.register(DateParamConverterProvider.class);
 
         // create and start a new instance of grizzly http server
         // exposing the Jersey application at BASE_URI
