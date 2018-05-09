@@ -28,67 +28,43 @@ import java.util.List;
 @Path("/students")
 public class StudentService {
 
-
-
-    private static List<Student> List = new ArrayList<>();;
-
-    /*static {
-        try {
-            List.add(
-                    new Student(
-                            "Jan",
-                            "Kowalski",
-                            new SimpleDateFormat("dd-MM-yyyy").parse("22-02-1994")
-                    )
-            );
-
-            List.add(
-                    new Student(
-                            "Anna",
-                            "Nowak",
-                            new SimpleDateFormat("dd-MM-yyyy").parse("12-05-1996")
-                    )
-            );
-
-            List.add(
-                    new Student(
-                            "Piotr",
-                            "Kowalczyk",
-                            new SimpleDateFormat("dd-MM-yyyy").parse("28-07-1997")
-                    )
-            );
-        } catch (Exception ignored) {
-        }
-    }*/
-
-    Student findStudentByIndex(int index){
-        for(Student student : List){
-            if(student.getIndex() == index){
-                return student;
-            }
-        }
-        return null;
-    }
-
-
     //[GET, POST] /students
 
     @GET
     @Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
-    public Response getAll() {
+    public Response getAll(
+            @QueryParam("firstname") String firstname,
+            @QueryParam("lastname") String lastname,
+            @QueryParam("beforeDate") String beforeDate,
+            @QueryParam("date") String date,
+            @QueryParam("afterDate") String afterDate
+
+    ) {
         try {
             Query<Student> query = MongoDB.getDatastore().createQuery(Student.class);
+            if (firstname != null) {
+                query.filter("firstname", firstname);
+            }
+            if (lastname != null) {
+                query.filter("lastname", lastname);
+            }
+            if(beforeDate != null){
+                query.field("birthday").lessThan(dateFromString(beforeDate));
+            }
+            if(date != null){
+                query.field("birthday").equal(dateFromString(date));
+            }
+            if(afterDate != null){
+                query.field("birthday").greaterThan(dateFromString(afterDate));
+            }
             List<Student> studentsList = query.asList();
-            GenericEntity<List<Student>> entity = new GenericEntity<List<Student>>(Lists.newArrayList(studentsList)){};
-            return Response.status(Response.Status.OK).entity(entity).build();
+            if(studentsList.size() > 0) {
+                GenericEntity<List<Student>> entity = new GenericEntity<List<Student>>(Lists.newArrayList(studentsList)) {};
+                return Response.status(Response.Status.OK).entity(entity).build();
+            }
         }catch (Exception e){
             e.printStackTrace();
         }
-//        if(List != null) {
-//            return new GenericEntity<List<Student>>(List){};
-//        }else {
-//            return Response.status(Response.Status.NOT_FOUND).build();
-//        }
         return  Response.status(Response.Status.NOT_FOUND).build();
     }
 
@@ -221,36 +197,7 @@ public class StudentService {
         }
     }
 
-
-    @GET
-    @Path("/find")
-    @Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
-    public Response findStudentsByName(
-            @QueryParam("firstname") String firstname,
-            @QueryParam("lastname") String lastname
-    ) {
-        Query query = MongoDB.getDatastore().createQuery(Student.class);
-        if (firstname != null) {
-            query.filter("firstname", firstname);
-        }
-        if (lastname != null) {
-            query.filter("lastname", lastname);
-        }
-        List<Student> students = query.asList();
-        if (students.size() > 0) {
-            GenericEntity<List<Student>> entity = new GenericEntity<List<Student>>(Lists.newArrayList(students)) {
-            };
-            return Response.status(Response.Status.OK).entity(entity).build();
-        }
-        return Response.status(Response.Status.NOT_FOUND).build();
-    }
-
-    @GET
-    @Path("/beforeDate")
-    @Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
-    public Response findStudentsByDate(
-            @QueryParam("date") String date
-    ) {
+    private Date dateFromString(String date){
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         Date d = null;
         try {
@@ -258,63 +205,7 @@ public class StudentService {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        Query query = MongoDB.getDatastore().createQuery(Student.class);
-        query.field("birthday").lessThan(d);
-        List<Student> students = query.asList();
-        if (students.size() > 0) {
-            GenericEntity<List<Student>> entity = new GenericEntity<List<Student>>(Lists.newArrayList(students)) {
-            };
-            return Response.status(Response.Status.OK).entity(entity).build();
-        }
-        return Response.status(Response.Status.NOT_FOUND).build();
-    }
-
-    @GET
-    @Path("/afterDate")
-    @Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
-    public Response findStudentsByDate2(
-            @QueryParam("date") String date
-    ) {
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        Date d = null;
-        try {
-            d = format.parse(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        Query query = MongoDB.getDatastore().createQuery(Student.class);
-        query.field("birthday").greaterThan(d);
-        List<Student> students = query.asList();
-        if (students.size() > 0) {
-            GenericEntity<List<Student>> entity = new GenericEntity<List<Student>>(Lists.newArrayList(students)) {
-            };
-            return Response.status(Response.Status.OK).entity(entity).build();
-        }
-        return Response.status(Response.Status.NOT_FOUND).build();
-    }
-
-    @GET
-    @Path("/byDate")
-    @Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
-    public Response findStudentsByDate3(
-            @QueryParam("date") String date
-    ) {
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        Date d = null;
-        try {
-            d = format.parse(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        Query query = MongoDB.getDatastore().createQuery(Student.class);
-        query.field("birthday").equal(d);
-        List<Student> students = query.asList();
-        if (students.size() > 0) {
-            GenericEntity<List<Student>> entity = new GenericEntity<List<Student>>(Lists.newArrayList(students)) {
-            };
-            return Response.status(Response.Status.OK).entity(entity).build();
-        }
-        return Response.status(Response.Status.NOT_FOUND).build();
+        return d;
     }
 
 }
