@@ -1,7 +1,9 @@
-package models;
+package services;
 
-import services.Student;
 import components.MongoDB;
+import models.Course;
+import models.Grade;
+import models.Student;
 import org.mongodb.morphia.query.Query;
 
 import javax.ws.rs.*;

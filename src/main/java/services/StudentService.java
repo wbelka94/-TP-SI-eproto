@@ -3,6 +3,7 @@ package services;
 import components.MongoDB;
 import jersey.repackaged.com.google.common.collect.Lists;
 import models.Grade;
+import models.Student;
 import org.mongodb.morphia.query.Query;
 
 import javax.ws.rs.*;
@@ -50,14 +51,15 @@ public class StudentService {
                 query.field("birthday").greaterThan(dateFromString(afterDate));
             }
             List<Student> studentsList = query.asList();
-            if(studentsList.size() > 0) {
+            //if(studentsList.size() > 0) {
                 GenericEntity<List<Student>> entity = new GenericEntity<List<Student>>(Lists.newArrayList(studentsList)) {};
                 return Response.status(Response.Status.OK).entity(entity).build();
-            }
+            //}
         }catch (Exception e){
             e.printStackTrace();
+            return  Response.status(Response.Status.BAD_REQUEST).build();
         }
-        return  Response.status(Response.Status.NOT_FOUND).build();
+       // return  Response.status(Response.Status.NOT_FOUND).build();
     }
 
     @POST
@@ -147,11 +149,11 @@ public class StudentService {
             }
         }
 
-        if(grades != null && grades.size() > 0){
+        //if(grades != null && grades.size() > 0){
             return new GenericEntity<List<Grade>>(grades){};
-        }else{
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
+//        }else{
+//            return Response.status(Response.Status.NOT_FOUND).build();
+//        }
     }
 
     @POST
@@ -212,14 +214,11 @@ public class StudentService {
         }
     }
 
-    private Date dateFromString(String date){
+    private Date dateFromString(String date) throws ParseException {
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         Date d = null;
-        try {
-            d = format.parse(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        d = format.parse(date);
+
         return d;
     }
 
