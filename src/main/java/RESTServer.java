@@ -1,5 +1,6 @@
 
 
+import components.CustomHeaders;
 import components.DateParamConverterProvider;
 import components.MongoDB;
 import org.glassfish.grizzly.http.server.HttpServer;
@@ -20,7 +21,8 @@ public class RESTServer {
         final ResourceConfig rc = new ResourceConfig()
                 .packages("org.glassfish.jersey.examples.linking","services")
                 .register(DeclarativeLinkingFeature.class)
-                .register(DateParamConverterProvider.class);
+                .register(DateParamConverterProvider.class)
+                .register(CustomHeaders.class);
 
         // create and start a new instance of grizzly http server
         // exposing the Jersey application at BASE_URI
