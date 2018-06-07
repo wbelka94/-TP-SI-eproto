@@ -103,7 +103,7 @@ tbody tr{
 
 
 tbody tr:nth-child(2n){
-    background-color: #F7F7F7;
+    background-color: #e4e2f7;
 }
 
 table input{
@@ -128,7 +128,23 @@ input {
     font-family: "Times New Roman";
 }
 
+.table-container{
+    overflow-x: auto;
+}
+
 @media print {
+    .table-container{
+        overflow: hidden;
+    }
+
+    table tr td:last-child, table tr th:last-child, table th input{
+        display: none;
+    }
+
+    table tr:last-child{
+        display: none;
+    }
+
     footer, header, nav{
         display: none;
     }
@@ -150,3 +166,4 @@ input {
         color: white;
     }
 }
+
