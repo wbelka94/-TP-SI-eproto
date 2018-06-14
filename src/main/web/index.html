@@ -79,7 +79,7 @@
         </section>
 
         <section id="grades-list" class="section">
-            <h2>Grades list for student X</h2>
+            <h2>Grades list for student: <span data-bind="text: currentStudent.firstname"></span> <span data-bind="text: currentStudent.lastname"></span> </h2>
             <form>
                 <div class="table-container">
                     <table>
@@ -115,18 +115,41 @@
                                        name="grades[value]" value="5"/></td>
                             <td><input data-bind="value: date" type="date" name="grades[date]" value="2018-04-25"/></td>
                             <td>
-                                <select data-bind="value: course" name="grades[course]">
-                                    <option value="1">TP-SI</option>
-                                    <option value="2">TP-AL</option>
-                                    <option value="3">PWiT</option>
-                                </select>
+                                <select data-bind="options: $parent.courses,
+                                    optionsText: function(item) {
+                                       return item.name
+                                   },
+                                   optionsValue: function(item) {
+                                       return item.uid
+                                   },
+                                   value: course"></select>
                             </td>
                             <td>
-                                <button>Delete</button>
-                                <button>Save</button>
+                                <button data-bind="click: $parent.deleteGrade.bind($data)">Delete</button>
                             </td>
                         </tr>
                         </tbody>
+                        <tfoot>
+                        <tr>
+                            <td></td>
+                            <td><input data-bind="value: gradeToAdd.value" type="number" min="2" max="5" step="0.5"
+                                       name="grades[value]" value="5"/></td>
+                            <td><input data-bind="value: gradeToAdd.date" type="date" name="grades[date]" value="2018-04-25"/></td>
+                            <td>
+                                <select data-bind="options: courses,
+                                    optionsText: function(item) {
+                                       return item.name
+                                   },
+                                   optionsValue: function(item) {
+                                       return item.uid
+                                   },
+                                   value: gradeToAdd.course"></select>
+                            </td>
+                            <td>
+                                <button data-bind="click: addGrade" style="width: 100%">Add</button>
+                            </td>
+                        </tr>
+                        </tfoot>
                     </table>
                 </div>
             </form>
