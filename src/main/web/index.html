@@ -19,7 +19,6 @@
     <nav>
         <ul>
             <li><a href="#student-list">Students list</a></li>
-            <li><a href="#grades-list">Grades list</a></li>
             <li><a href="#courses-list">Courses list</a></li>
         </ul>
     </nav>
@@ -47,49 +46,25 @@
                             </th>
                         </tr>
                         </thead>
-                        <tbody>
+                        <tbody data-bind="foreach: students">
                         <tr>
-                            <td><input type="number" name="students[index]" value="123456" readonly/></td>
-                            <td><input type="text" name="students[firstname]" value="Jan" required/></td>
-                            <td><input type="text" name="students[lastname]" value="Nowak" required/></td>
-                            <td><input type="date" name="students[birthday]" value="1985-03-16" required/></td>
+                            <td><input data-bind="value: index" type="number" name="students[index]" value="123456"
+                                       readonly/></td>
+                            <td><input data-bind="value: firstname" type="text" name="students[firstname]" value="Jan"
+                                       required/></td>
+                            <td><input data-bind="value: lastname" type="text" name="students[lastname]" value="Nowak"
+                                       required/></td>
+                            <td><input data-bind="value: birthday" type="date" name="students[birthday]"
+                                       value="1985-03-16" required/></td>
                             <td>
                                 <button>Delete</button>
-                                <button>Save</button>
+                                <a class="button" href="#grades-list" data-bind="click: $parent.onClickGrades">Grades</a>
                             </td>
                         </tr>
+                        </tbody>
+                        <tfoot>
                         <tr>
-                            <td><input type="number" name="students[index]" value="123456" readonly/></td>
-                            <td><input type="text" name="students[firstname]" value="Arkadiusz"/></td>
-                            <td><input type="text" name="students[lastname]" value="Kowalski"/></td>
-                            <td><input type="date" name="students[birthday]" value="1990-04-12"/></td>
-                            <td>
-                                <button>Delete</button>
-                                <button>Save</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><input type="number" name="students[index]" value="123456" readonly/></td>
-                            <td><input type="text" name="students[firstname]" value="Jan" required/></td>
-                            <td><input type="text" name="students[lastname]" value="Nowak" required/></td>
-                            <td><input type="date" name="students[birthday]" value="1985-03-16" required/></td>
-                            <td>
-                                <button>Delete</button>
-                                <button>Save</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><input type="number" name="students[index]" value="123456" readonly/></td>
-                            <td><input type="text" name="students[firstname]" value="Arkadiusz"/></td>
-                            <td><input type="text" name="students[lastname]" value="Kowalski"/></td>
-                            <td><input type="date" name="students[birthday]" value="1990-04-12"/></td>
-                            <td>
-                                <button>Delete</button>
-                                <button>Save</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><input type="number" name="students[index]" value="" /></td>
+                            <td><input type="number" name="students[index]" value=""/></td>
                             <td><input type="text" name="students[firstname]" value=""/></td>
                             <td><input type="text" name="students[lastname]" value=""/></td>
                             <td><input type="date" name="students[birthday]" value=""/></td>
@@ -97,7 +72,7 @@
                                 <button style="width: 100%;">Add</button>
                             </td>
                         </tr>
-                        </tbody>
+                        </tfoot>
                     </table>
                 </div>
             </form>
@@ -133,13 +108,14 @@
                             </th>
                         </tr>
                         </thead>
-                        <tbody>
+                        <tbody data-bind="foreach: grades">
                         <tr>
-                            <td><input type="number" name="grades[id]" value="5" readonly/></td>
-                            <td><input type="number" min="2" max="5" step="0.5" name="grades[value]" value="5"/></td>
-                            <td><input type="date" name="grades[date]" value="2018-04-25"/></td>
+                            <td><input data-bind="value: id" type="number" name="grades[id]" value="5" readonly/></td>
+                            <td><input data-bind="value: value" type="number" min="2" max="5" step="0.5"
+                                       name="grades[value]" value="5"/></td>
+                            <td><input data-bind="value: date" type="date" name="grades[date]" value="2018-04-25"/></td>
                             <td>
-                                <select name="grades[course]">
+                                <select data-bind="value: course" name="grades[course]">
                                     <option value="1">TP-SI</option>
                                     <option value="2">TP-AL</option>
                                     <option value="3">PWiT</option>
@@ -177,25 +153,28 @@
                             </th>
                         </tr>
                         </thead>
-                        <tbody>
+                        <tbody data-bind="foreach: courses">
                         <tr>
-                            <td><input type="number" name="courses[id]" value="4" readonly/></td>
-                            <td><input type="text" name="courses[name]" value="PTI"/></td>
-                            <td><input type="text" name="courses[lecturer]" value="Jan Kowalski"/></td>
+                            <td><input data-bind="value: uid" type="number" name="courses[id]" value="4" readonly/></td>
+                            <td><input data-bind="value: name" type="text" name="courses[name]" value="PTI"/></td>
+                            <td><input data-bind="value: lecturer" type="text" name="courses[lecturer]"
+                                       value="Jan Kowalski"/></td>
                             <td>
                                 <button>Delete</button>
                                 <button>Save</button>
                             </td>
                         </tr>
+                        </tbody>
+                        <tfoot>
                         <tr>
-                            <td><input type="number" name="courses[id]" value="" /></td>
+                            <td><input type="number" name="courses[id]" value=""/></td>
                             <td><input type="text" name="courses[name]" value=""/></td>
                             <td><input type="text" name="courses[lecturer]" value=""/></td>
                             <td>
                                 <button style="width: 100%">Add</button>
                             </td>
                         </tr>
-                        </tbody>
+                        </tfoot>
                     </table>
                 </div>
             </form>
@@ -211,5 +190,6 @@
         <li><a href="https://github.com/wbelka94/-TP-SI-eproto">Grades system GIT</a></li>
     </ul>
 </footer>
+<script src="js/app.js"></script>
 </body>
 </html>
