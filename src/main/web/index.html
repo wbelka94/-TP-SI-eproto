@@ -160,18 +160,17 @@
                             <td><input data-bind="value: lecturer" type="text" name="courses[lecturer]"
                                        value="Jan Kowalski"/></td>
                             <td>
-                                <button>Delete</button>
-                                <button>Save</button>
+                                <button data-bind="click: $parent.deleteCourse.bind($data)">Delete</button>
                             </td>
                         </tr>
                         </tbody>
                         <tfoot>
                         <tr>
-                            <td><input type="number" name="courses[id]" value=""/></td>
-                            <td><input type="text" name="courses[name]" value=""/></td>
-                            <td><input type="text" name="courses[lecturer]" value=""/></td>
+                            <td></td>
+                            <td><input data-bind="value: courseToAdd.name" type="text" name="courses[name]" value=""/></td>
+                            <td><input data-bind="value: courseToAdd.lecturer" type="text" name="courses[lecturer]" value=""/></td>
                             <td>
-                                <button style="width: 100%">Add</button>
+                                <button data-bind="click: addCourse" style="width: 100%">Add</button>
                             </td>
                         </tr>
                         </tfoot>
