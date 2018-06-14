@@ -3,7 +3,7 @@
 var apiSerwer = "http://localhost:8888/myapp/";
 
 class Student {
-    constructor(data){
+    constructor(data = {firstname: "", lastname: "", birthday: ""}){
         this.firstname = new ko.observable(data.firstname);
         this.lastname = new ko.observable(data.lastname);
         this.birthday = new ko.observable(data.birthday);
@@ -55,33 +55,37 @@ class Student {
 var gradesSystemModel = function(){
     var self = this;
 
-    this.students = ko.observableArray([]);ko.mapping.fromJS(getStudents());
-    this.courses = ko.observableArray([]);ko.mapping.fromJS(getCourses());
-    self.grades = ko.observableArray([]);
-
-    this.students.extend({ notify: 'always' });
-
-    this.students.subscribe(function(){
-        console.log("sub");
+    this.students = ko.observableArray([]);
+    this.studentToAdd = new Student();
+    this.students.subscribe(function(change){
+       console.log(change);
     });
+    this.courses = ko.observableArray([]);
+    this.grades = ko.observableArray([]);
 
-    var mapping = {
+    getStudents();
+
+    function getStudents() {
+        var mapping = {
             create: function(options) {
                 return new Student(options.data);
             }
-    };
-
-    ko.mapping.fromJS(getStudents(),mapping,this.students);
-
-    function getStudents() {
-        return JSON.parse($.ajax({
+        };
+        var studnets = JSON.parse($.ajax({
             url: apiSerwer + 'students',
             async: false,
             headers: {
                 Accept: "application/json",
             }
         }).responseText);
+        ko.mapping.fromJS(studnets,mapping,self.students);
     }
+
+    function addStudent(){
+        self.students.push(self.studentToAdd);
+        self.studentToAdd = new Student();
+    }
+
     function getCourses() {
         return JSON.parse($.ajax({
             url: apiSerwer + 'courses',
