@@ -57,19 +57,19 @@
                             <td><input data-bind="value: birthday" type="date" name="students[birthday]"
                                        value="1985-03-16" required/></td>
                             <td>
-                                <button data-bind="click: deleteStudent">Delete</button>
+                                <button data-bind="click: $parent.deleteStudent.bind($data)">Delete</button>
                                 <a class="button" href="#grades-list" data-bind="click: $parent.onClickGrades">Grades</a>
                             </td>
                         </tr>
                         </tbody>
                         <tfoot>
                         <tr>
-                            <td><input type="number" name="students[index]" value=""/></td>
-                            <td><input type="text" name="students[firstname]" value=""/></td>
-                            <td><input type="text" name="students[lastname]" value=""/></td>
-                            <td><input type="date" name="students[birthday]" value=""/></td>
+                            <td></td>
+                            <td><input data-bind="value: studentToAdd.firstname" type="text" name="studentToAdd[firstname]" value=""/></td>
+                            <td><input data-bind="value: studentToAdd.lastname" type="text" name="studentToAdd[lastname]" value=""/></td>
+                            <td><input data-bind="value: studentToAdd.birthday" type="date" name="studentToAdd[birthday]" value=""/></td>
                             <td>
-                                <button style="width: 100%;">Add</button>
+                                <button data-bind="click: addStudent" style="width: 100%;">Add</button>
                             </td>
                         </tr>
                         </tfoot>

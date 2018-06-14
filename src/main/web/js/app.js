@@ -40,11 +40,24 @@ class Student {
         });
     }
 
-    deleteStudent(){
+    DELETE(){
         $.ajax({
             url: "http://localhost:8888/myapp/students/" + ko.toJS(this.index),
             method: "DELETE",
             async: false,
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json"
+            }
+        });
+    }
+
+    POST(){
+        $.ajax({
+            url: "http://localhost:8888/myapp/students/",
+            method: "POST",
+            async: false,
+            data: this.getData(),
             headers: {
                 Accept: "application/json",
                 "Content-Type": "application/json"
@@ -57,15 +70,11 @@ var gradesSystemModel = function(){
 
     this.students = ko.observableArray([]);
     this.studentToAdd = new Student();
-    this.students.subscribe(function(change){
-       console.log(change);
-    });
     this.courses = ko.observableArray([]);
     this.grades = ko.observableArray([]);
 
-    getStudents();
 
-    function getStudents() {
+    this.getStudents = function() {
         var mapping = {
             create: function(options) {
                 return new Student(options.data);
@@ -81,9 +90,18 @@ var gradesSystemModel = function(){
         ko.mapping.fromJS(studnets,mapping,self.students);
     }
 
-    function addStudent(){
-        self.students.push(self.studentToAdd);
+    this.getStudents();
+
+
+    this.addStudent = function(){
+        self.studentToAdd.POST();
+        self.getStudents();
         self.studentToAdd = new Student();
+    }
+
+    this.deleteStudent = function(student){
+        student.DELETE();
+        self.getStudents();
     }
 
     function getCourses() {
