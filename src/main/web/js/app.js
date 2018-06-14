@@ -221,7 +221,7 @@ var gradesSystemModel = function(){
     this.addStudent = function(){
         self.studentToAdd.POST();
         self.getStudents();
-        self.studentToAdd = new Student();
+        ko.mapping.fromJS(new Student,{},self.studentToAdd);
     }
     this.deleteStudent = function(student){
         student.DELETE();
@@ -247,7 +247,7 @@ var gradesSystemModel = function(){
     this.addCourse= function(){
         self.courseToAdd.POST();
         self.getCourses();
-        self.courseToAdd = new Course();
+        ko.mapping.fromJS(new Course,{},self.courseToAdd);
     }
     this.deleteCourse = function(course){
         course.DELETE();
@@ -274,7 +274,7 @@ var gradesSystemModel = function(){
     this.addGrade = function(){
         self.gradeToAdd.POST();
         self.getGradesForStudent(self.gradeToAdd.student);
-        console.log(self.gradeToAdd.student);
+        ko.mapping.fromJS(new Grade,{},self.gradeToAdd);
     }
     this.deleteGrade = function(grade){
         grade.DELETE();
@@ -284,9 +284,8 @@ var gradesSystemModel = function(){
 
     self.onClickGrades = function(data) {
         var dataJS = ko.toJS(data);
-        ko.mapping.fromJS(dataJS.firstname,{},self.currentStudent.firstname);
-        ko.mapping.fromJS(dataJS.lastname,{},self.currentStudent.lastname);
-        console.log(dataJS.index);
+        ko.mapping.fromJS(dataJS,{},self.currentStudent);
+
         if(typeof dataJS.index !== 'undefined'){
             self.getGradesForStudent(dataJS.index);
         }
