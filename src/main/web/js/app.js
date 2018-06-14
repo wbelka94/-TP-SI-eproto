@@ -8,15 +8,50 @@ class Student {
         this.lastname = new ko.observable(data.lastname);
         this.birthday = new ko.observable(data.birthday);
         this.index = new ko.observable(data.index);
+        this.addSubscribe();
     }
 
     addSubscribe(){
-        for(var x in this){
+        this.firstname.subscribe(this.update.bind(this));
+        this.lastname.subscribe(this.update.bind(this));
+        this.birthday.subscribe(this.update.bind(this));
+        this.index.subscribe(this.update.bind(this));
+    }
 
-        }
+    getData(){
+        return ko.toJSON({
+            firstname: this.firstname,
+            lastname: this.lastname,
+            birthday: this.birthday
+        });
+    }
+
+    update(){
+        console.log(this.getData());
+        $.ajax({
+            url: "http://localhost:8888/myapp/students/" + ko.toJS(this.index),
+            method: "PUT",
+            data: this.getData(),
+            async: false,
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json"
+            }
+        });
+    }
+
+    deleteStudent(){
+        $.ajax({
+            url: "http://localhost:8888/myapp/students/" + ko.toJS(this.index),
+            method: "DELETE",
+            async: false,
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json"
+            }
+        });
     }
 }
-
 var gradesSystemModel = function(){
     var self = this;
 
@@ -31,25 +66,12 @@ var gradesSystemModel = function(){
     });
 
     var mapping = {
-        'children': {
             create: function(options) {
-                var student = new Student(options.data);
-                return student;
+                return new Student(options.data);
             }
-        }
-    }
+    };
 
     ko.mapping.fromJS(getStudents(),mapping,this.students);
-
-    this.students.subscribe(function(){
-        console.log("sub");
-    });
-
-    this.students.push(new Student({firstname: "s", lastname: "X", birthday: "2018-02-23", index: 258}))
-
-    // ko.utils.arrayForEach(this.students(), function (i,student) {
-    //     i.subscribe(function(){console.log("sub xxx")});
-    // })
 
     function getStudents() {
         return JSON.parse($.ajax({

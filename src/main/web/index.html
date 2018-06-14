@@ -57,7 +57,7 @@
                             <td><input data-bind="value: birthday" type="date" name="students[birthday]"
                                        value="1985-03-16" required/></td>
                             <td>
-                                <button>Delete</button>
+                                <button data-bind="click: deleteStudent">Delete</button>
                                 <a class="button" href="#grades-list" data-bind="click: $parent.onClickGrades">Grades</a>
                             </td>
                         </tr>

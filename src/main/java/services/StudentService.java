@@ -103,6 +103,7 @@ public class StudentService {
             s.setBirthday(student.getBirthday());
             s.setFirstname(student.getFirstname());
             s.setLastname(student.getLastname());
+            MongoDB.getDatastore().save(s);
             return Response.status(Response.Status.OK).build();
         }
         return Response.status(Response.Status.NOT_FOUND).build();
