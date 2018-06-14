@@ -274,7 +274,7 @@ var gradesSystemModel = function(){
     this.addGrade = function(){
         self.gradeToAdd.POST();
         self.getGradesForStudent(self.gradeToAdd.student);
-        ko.mapping.fromJS(new Grade,{},self.gradeToAdd);
+        //ko.mapping.fromJS(new Grade,{},self.gradeToAdd);
     }
     this.deleteGrade = function(grade){
         grade.DELETE();
@@ -290,11 +290,7 @@ var gradesSystemModel = function(){
             self.getGradesForStudent(dataJS.index);
         }
         window.location = "#grades-list";
-    };
-
-
-
-
+    }
 }
 var  viewModel = new gradesSystemModel();
 
