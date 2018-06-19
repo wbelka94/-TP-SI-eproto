@@ -37,10 +37,10 @@
                             <th>Functions</th>
                         </tr>
                         <tr>
-                            <th><input type="number" name="students[index]" placeholder="Index"/></th>
-                            <th><input type="text" name="students[firstname]" placeholder="First name"/></th>
-                            <th><input type="text" name="students[lastname]" placeholder="Last name"/></th>
-                            <th><input type="date" name="students[birthday]"/></th>
+                            <th><input data-bind="value: studentSearch.index" type="number" name="students[index]" placeholder="Index"/></th>
+                            <th><input data-bind="value: studentSearch.firstname" type="text" name="students[firstname]" placeholder="First name"/></th>
+                            <th><input data-bind="value: studentSearch.lastname" type="text" name="students[lastname]" placeholder="Last name"/></th>
+                            <th><input data-bind="value: studentSearch.birthday" type="date" name="students[birthday]"/></th>
                             <th>
                                 <button style="width: 100%">Search</button>
                             </th>

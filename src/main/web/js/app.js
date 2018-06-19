@@ -190,16 +190,54 @@ class Grade {
     }
 }
 
+class StudentSearch extends Student{
+    constructor(observableArray ,data = {firstname: "", lastname: "", birthday: ""},sub = true){
+        super(data,sub);
+        this.studentsObservableArray = observableArray;
+    }
+
+    addSubscribe(){
+        this.firstname.subscribe(this.search.bind(this));
+        this.lastname.subscribe(this.search.bind(this));
+        this.birthday.subscribe(this.search.bind(this));
+        this.index.subscribe(this.search.bind(this));
+    }
+
+    search(){
+        var mapping = {
+            create: function(options) {
+                return new Student(options.data);
+            }
+        };
+        var students = JSON.parse($.ajax({
+            url: "http://localhost:8888/myapp/students?" + this.getSearchParametersString(),
+            method: "GET",
+            async: false,
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json"
+            },
+        }).responseText);
+        ko.mapping.fromJS(students,mapping,this.studentsObservableArray);
+    }
+
+    getSearchParametersString(){
+        return "index="+ko.toJS(this.index)+"&firstname="+ko.toJS(this.firstname)+"&lastname="+ko.toJS(this.lastname)+"&birthday="+ko.toJS(this.birthday)
+    }
+}
+
 var gradesSystemModel = function(){
     var self = this;
 
     this.students = ko.observableArray([]);
     this.studentToAdd = new Student();
+    this.studentSearch = new StudentSearch(this.students);
     this.courses = ko.observableArray([]);
     this.courseToAdd = new Course();
     this.grades = ko.observableArray([]);
     this.gradeToAdd = new Grade();
     this.currentStudent = new Student({firstname: "", lastname: "", birthday: ""},false);
+
 
     this.getStudents = function() {
         var mapping = {
