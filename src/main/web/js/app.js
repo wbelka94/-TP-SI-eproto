@@ -127,7 +127,7 @@ class Course {
     }
 }
 class Grade {
-    constructor(data = {id: "", value: "", course: "", date: ""},student = 0){
+    constructor(data = {id: "", value: "", course: {uid: ""}, date: ""},student = 0){
         this.student = student;
         this.id = new ko.observable(data.id);
         this.value = new ko.observable(data.value);
@@ -225,7 +225,6 @@ class StudentSearch extends Student{
         return "index="+ko.toJS(this.index)+"&firstname="+ko.toJS(this.firstname)+"&lastname="+ko.toJS(this.lastname)+"&date="+ko.toJS(this.birthday)
     }
 }
-
 class CourseSearch extends Course{
     constructor(observableArray ,data){
         super(data);
@@ -261,6 +260,42 @@ class CourseSearch extends Course{
         return "id="+ko.toJS(this.uid)+"&name="+ko.toJS(this.name)+"&lecturer="+ko.toJS(this.lecturer);
     }
 }
+class GradeSearch extends Grade{
+    constructor(observableArray ,data,student){
+        super(data,student);
+        this.gradesObservableArray = observableArray;
+    }
+
+    addSubscribe(){
+        this.id.subscribe(this.search.bind(this));
+        this.value.subscribe(this.search.bind(this));
+        this.course.subscribe(this.search.bind(this));
+        this.date.subscribe(this.search.bind(this));
+    }
+
+    search(){
+        var mapping = {
+            create: function(options) {
+                return new Grade(options.data,this.student);
+            }
+        };
+        var grades = JSON.parse($.ajax({
+            url: "http://localhost:8888/myapp/students/"+this.student+"/grades/?" + this.getSearchParametersString(),
+            method: "GET",
+            async: false,
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json"
+            },
+        }).responseText);
+        console.log(grades);
+        ko.mapping.fromJS(grades,mapping,this.gradesObservableArray);
+    }
+
+    getSearchParametersString(){
+        return "value="+ko.toJS(this.value)+"&id="+ko.toJS(this.id)+"&date="+ko.toJS(this.date);
+    }
+}
 
 var gradesSystemModel = function(){
     var self = this;
@@ -273,6 +308,7 @@ var gradesSystemModel = function(){
     this.courseSearch = new CourseSearch(this.courses);
     this.grades = ko.observableArray([]);
     this.gradeToAdd = new Grade();
+    this.gradeSearch = new GradeSearch(this.grades);
     this.currentStudent = new Student({firstname: "", lastname: "", birthday: ""},false);
 
 
@@ -359,7 +395,7 @@ var gradesSystemModel = function(){
     self.onClickGrades = function(data) {
         var dataJS = ko.toJS(data);
         ko.mapping.fromJS(dataJS,{},self.currentStudent);
-
+        self.gradeSearch.student = dataJS.index;
         if(typeof dataJS.index !== 'undefined'){
             self.getGradesForStudent(dataJS.index);
         }

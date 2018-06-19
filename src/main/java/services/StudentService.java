@@ -135,7 +135,7 @@ public class StudentService {
             @QueryParam("greaterGrade") Double graeterGrade,
             @QueryParam("lessGrade") Double lessGrade,
             @QueryParam("value") Double value,
-            @QueryParam("id") int id,
+            @QueryParam("id") Integer id,
             @QueryParam("date") String date
             ) throws ParseException {
         List<Grade> grades = MongoDB.getDatastore().createQuery(Student.class).filter("index",index).get().getGrades();
@@ -159,11 +159,11 @@ public class StudentService {
                 iterator.remove();
                 continue;
             }
-            if(id != 0 && grade.getId() != id){
+            if(id != null && grade.getId() != id){
                 iterator.remove();
                 continue;
             }
-            if(date != null && grade.getDate().equals(dateFromString(date))){
+            if(date != null && !date.equals("") && !grade.getDate().equals(dateFromString(date))){
                 iterator.remove();
                 continue;
             }

@@ -92,10 +92,10 @@
                             <th>Actions</th>
                         </tr>
                         <tr>
-                            <th><input type="number" name="grades[id]" placeholder="Id"/></th>
-                            <th><input type="number" min="2" max="5" step="0.5" name="grades[value]"
+                            <th><input data-bind="value: gradeSearch.id" type="number" name="grades[id]" placeholder="Id"/></th>
+                            <th><input data-bind="value: gradeSearch.value" type="number" min="2" max="5" step="0.5" name="grades[value]"
                                        placeholder="Value"/></th>
-                            <th><input type="date" name="grades[date]"/></th>
+                            <th><input data-bind="value: gradeSearch.date" type="date" name="grades[date]"/></th>
                             <th>
                                 <select name="grades[course]">
                                     <option>TP-SI</option>
