@@ -3,12 +3,14 @@
 var apiSerwer = "http://localhost:8888/myapp/";
 
 class Student {
-    constructor(data = {firstname: "", lastname: "", birthday: ""}){
+    constructor(data = {firstname: "", lastname: "", birthday: ""},sub = true){
         this.firstname = new ko.observable(data.firstname);
         this.lastname = new ko.observable(data.lastname);
         this.birthday = new ko.observable(data.birthday);
         this.index = new ko.observable(data.index);
-        this.addSubscribe();
+        if(sub) {
+            this.addSubscribe();
+        }
     }
 
     addSubscribe(){
@@ -197,10 +199,7 @@ var gradesSystemModel = function(){
     this.courseToAdd = new Course();
     this.grades = ko.observableArray([]);
     this.gradeToAdd = new Grade();
-    this.currentStudent = new Student();
-
-    this.avaliebleCourses =
-
+    this.currentStudent = new Student({firstname: "", lastname: "", birthday: ""},false);
 
     this.getStudents = function() {
         var mapping = {
