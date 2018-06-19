@@ -168,9 +168,9 @@
                             <th>Actions</th>
                         </tr>
                         <tr>
-                            <th><input type="number" name="courses[id]" placeholder="Id"/></th>
-                            <th><input type="text" name="courses[name]" placeholder="Name"/></th>
-                            <th><input type="text" name="courses[lecturer]" placeholder="Lecturer"/></th>
+                            <th><input data-bind="value: courseSearch.uid" type="number" name="courses[id]" placeholder="Id"/></th>
+                            <th><input data-bind="value: courseSearch.name" type="text" name="courses[name]" placeholder="Name"/></th>
+                            <th><input data-bind="value: courseSearch.lecturer" type="text" name="courses[lecturer]" placeholder="Lecturer"/></th>
                             <th>
                                 <button style="width: 100%">Search</button>
                             </th>

@@ -26,6 +26,7 @@ public class StudentService {
     @GET
     @Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
     public Response getAll(
+            @QueryParam("index") Integer index,
             @QueryParam("firstname") String firstname,
             @QueryParam("lastname") String lastname,
             @QueryParam("beforeDate") String beforeDate,
@@ -35,6 +36,9 @@ public class StudentService {
     ) {
         try {
             Query<Student> query = MongoDB.getDatastore().createQuery(Student.class);
+            if (index != null) {
+                query.field("index").equal(index);
+            }
             if (firstname != null) {
                 query.field("firstname").containsIgnoreCase(firstname);
             }
@@ -44,7 +48,7 @@ public class StudentService {
             if(beforeDate != null){
                 query.field("birthday").lessThan(dateFromString(beforeDate));
             }
-            if(date != null){
+            if(date != null && !date.equals("")){
                 query.field("birthday").equal(dateFromString(date));
             }
             if(afterDate != null){
@@ -129,8 +133,11 @@ public class StudentService {
             @PathParam("index") int index,
             @QueryParam("course") Integer course,
             @QueryParam("greaterGrade") Double graeterGrade,
-            @QueryParam("lessGrade") Double lessGrade
-            ) {
+            @QueryParam("lessGrade") Double lessGrade,
+            @QueryParam("value") Double value,
+            @QueryParam("id") int id,
+            @QueryParam("date") String date
+            ) throws ParseException {
         List<Grade> grades = MongoDB.getDatastore().createQuery(Student.class).filter("index",index).get().getGrades();
 
         Iterator<Grade> iterator = grades.iterator();
@@ -145,6 +152,18 @@ public class StudentService {
                 continue;
             }
             if(lessGrade != null && grade.getValue() >= lessGrade){
+                iterator.remove();
+                continue;
+            }
+            if(value != null && grade.getValue() != value){
+                iterator.remove();
+                continue;
+            }
+            if(id != 0 && grade.getId() != id){
+                iterator.remove();
+                continue;
+            }
+            if(date != null && grade.getDate().equals(dateFromString(date))){
                 iterator.remove();
                 continue;
             }

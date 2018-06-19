@@ -18,12 +18,20 @@ public class CourseService {
     @GET
     @Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
     public Object getAll(
-            @QueryParam("lecturer") String lecturer
+            @QueryParam("lecturer") String lecturer,
+            @QueryParam("name") String name,
+            @QueryParam("id") int id
     ) {
         try {
             Query<Course> query = MongoDB.getDatastore().createQuery(Course.class);
             if(lecturer != null){
                 query.field("lecturer").containsIgnoreCase(lecturer);
+            }
+            if(name != null){
+                query.field("name").containsIgnoreCase(name);
+            }
+            if(id != 0){
+                query.field("uid").equal(id);
             }
             return query.asList();
         }catch (Exception e){
