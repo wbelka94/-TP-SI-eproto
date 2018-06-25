@@ -293,7 +293,7 @@ class GradeSearch extends Grade{
     }
 
     getSearchParametersString(){
-        return "value="+ko.toJS(this.value)+"&id="+ko.toJS(this.id)+"&date="+ko.toJS(this.date);
+        return "value="+ko.toJS(this.value)+"&id="+ko.toJS(this.id)+"&date="+ko.toJS(this.date)+"&course="+ko.toJS(this.course);
     }
 }
 

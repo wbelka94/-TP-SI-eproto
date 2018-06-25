@@ -37,10 +37,10 @@
                             <th>Functions</th>
                         </tr>
                         <tr>
-                            <th><input data-bind="value: studentSearch.index" type="number" name="students[index]" placeholder="Index"/></th>
-                            <th><input data-bind="value: studentSearch.firstname" type="text" name="students[firstname]" placeholder="First name"/></th>
-                            <th><input data-bind="value: studentSearch.lastname" type="text" name="students[lastname]" placeholder="Last name"/></th>
-                            <th><input data-bind="value: studentSearch.birthday" type="date" name="students[birthday]"/></th>
+                            <th><input data-bind="textInput: studentSearch.index" type="number" name="students[index]" placeholder="Index"/></th>
+                            <th><input data-bind="textInput: studentSearch.firstname" type="text" name="students[firstname]" placeholder="First name"/></th>
+                            <th><input data-bind="textInput: studentSearch.lastname" type="text" name="students[lastname]" placeholder="Last name"/></th>
+                            <th><input data-bind="textInput: studentSearch.birthday" type="date" name="students[birthday]"/></th>
                             <th>
                                 <button style="width: 100%">Search</button>
                             </th>
@@ -92,16 +92,20 @@
                             <th>Actions</th>
                         </tr>
                         <tr>
-                            <th><input data-bind="value: gradeSearch.id" type="number" name="grades[id]" placeholder="Id"/></th>
-                            <th><input data-bind="value: gradeSearch.value" type="number" min="2" max="5" step="0.5" name="grades[value]"
-                                       placeholder="Value"/></th>
-                            <th><input data-bind="value: gradeSearch.date" type="date" name="grades[date]"/></th>
+                            <th><input data-bind="textInput: gradeSearch.id" type="number" name="grades[id]" placeholder="Id"/></th>
+                            <th><input data-bind="textInput: gradeSearch.value" type="number" min="2" max="5" step="0.5" name="grades[value]"
+                                       placeholder="textInput"/></th>
+                            <th><input data-bind="textInput: gradeSearch.date" type="date" name="grades[date]"/></th>
                             <th>
-                                <select name="grades[course]">
-                                    <option>TP-SI</option>
-                                    <option>TP-AL</option>
-                                    <option>PWiT</option>
-                                </select>
+
+                                <select data-bind="options: courses,
+                                    optionsText: function(item) {
+                                       return item.name
+                                   },
+                                   optionsValue: function(item) {
+                                       return item.uid
+                                   },
+                                   textInput: gradeSearch.course"></select>
                             </th>
                             <th>
                                 <button style="width: 100%">Search</button>
@@ -168,9 +172,9 @@
                             <th>Actions</th>
                         </tr>
                         <tr>
-                            <th><input data-bind="value: courseSearch.uid" type="number" name="courses[id]" placeholder="Id"/></th>
-                            <th><input data-bind="value: courseSearch.name" type="text" name="courses[name]" placeholder="Name"/></th>
-                            <th><input data-bind="value: courseSearch.lecturer" type="text" name="courses[lecturer]" placeholder="Lecturer"/></th>
+                            <th><input data-bind="textInput: courseSearch.uid" type="number" name="courses[id]" placeholder="Id"/></th>
+                            <th><input data-bind="textInput: courseSearch.name" type="text" name="courses[name]" placeholder="Name"/></th>
+                            <th><input data-bind="textInput: courseSearch.lecturer" type="text" name="courses[lecturer]" placeholder="Lecturer"/></th>
                             <th>
                                 <button style="width: 100%">Search</button>
                             </th>
